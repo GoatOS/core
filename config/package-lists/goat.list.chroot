@@ -14,10 +14,11 @@ cryptsetup
 firmware-linux
 firmware-realtek
 firmware-amd-graphics
-firmware-nvidia-graphics
 firmware-sof-signed
 intel-microcode
 amd64-microcode
+nvidia-driver
+linux-headers-amd64
 
 xorg
 lightdm
@@ -73,9 +74,7 @@ zsh
 zsh-autosuggestions
 zsh-syntax-highlighting
 binwalk
-radare2
 macchanger
 ffuf
 
 firefox-esr
-webext-ublock-origin

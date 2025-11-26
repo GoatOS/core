@@ -1,4 +1,4 @@
 #!/bin/sh
 
 chsh -s /bin/zsh root
-chsh -s /bin/zsh user
+chsh -s /bin/zsh goat 

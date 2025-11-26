@@ -22,7 +22,7 @@ LB_DISTRIBUTION_BINARY="bookworm"
 LB_PARENT_DISTRIBUTION_BINARY="bookworm"
 
 # Select parent distribution for debian-installer to use
-LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION=""
+LB_PARENT_DEBIAN_INSTALLER_DISTRIBUTION="bookworm"
 
 # Select archive areas to use
 LB_ARCHIVE_AREAS="main contrib non-free non-free-firmware"
