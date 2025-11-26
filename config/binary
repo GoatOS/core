@@ -28,7 +28,7 @@ LB_BOOTLOADER_EFI="grub-efi"
 LB_BOOTLOADERS=""
 
 # Set checksums
-LB_CHECKSUMS="sha256"
+LB_CHECKSUMS="sha256 md5"
 
 # Set compression
 LB_COMPRESSION="none"
@@ -50,7 +50,7 @@ LB_ZSYNC="false"
 LB_BUILD_WITH_CHROOT="true"
 
 # Set debian-installer
-LB_DEBIAN_INSTALLER="none"
+LB_DEBIAN_INSTALLER="live"
 
 # Set debian-installer suite
 LB_DEBIAN_INSTALLER_DISTRIBUTION="bookworm"
