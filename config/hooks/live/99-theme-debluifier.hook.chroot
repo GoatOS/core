@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo "--- APLICANDO PALETA DARK MODERN (REMOVENDO AZUL) ---"
+
+THEME_DIR="/usr/share/themes/Goat-Dark"
+
+# Cores para substituir:
+# #5294e2 (Azul Principal) -> #454545 (Cinza Grafite)
+# #2679db (Azul Escuro/Ativo) -> #363636 (Preto Suave)
+# #a9caf1 (Links/Azul Claro) -> #cccccc (Cinza Claro)
+# 82, 148, 226 (Azul em RGBA) -> 69, 69, 69 (Cinza em RGBA)
+
+# Executa a substituição em todos os arquivos CSS, XML, RC e SVG do tema
+find "$THEME_DIR" -type f \( -name "*.css" -o -name "*.xml" -o -name "*.rc" -o -name "*.svg" \) -exec sed -i \
+    -e 's/#5294e2/#454545/g' \
+    -e 's/#2679db/#363636/g' \
+    -e 's/#a9caf1/#cccccc/g' \
+    -e 's/82, 148, 226/69, 69, 69/g' \
+    {} +
+
+echo "--- TEMA CORRIGIDO COM SUCESSO ---"

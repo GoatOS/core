@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# Define o diretório do tema
+THEME_DIR="/usr/share/themes/Goat-Dark"
+
+echo "--- EXTERMINANDO AZUL DO TEMA GOAT-DARK ---"
+
+# Se o diretório não existir (ex: erro no copy), cria para evitar falha
+if [ ! -d "$THEME_DIR" ]; then
+    echo "AVISO: Pasta do tema não encontrada em $THEME_DIR"
+    exit 0
+fi
+
+# 1. Substituir Hexadecimais (Maiúsculo e Minúsculo)
+# #5294e2 (Azul Padrão) -> #454545 (Cinza Grafite)
+find "$THEME_DIR" -type f -exec sed -i 's/#5294e2/#454545/gI' {} +
+find "$THEME_DIR" -type f -exec sed -i 's/#5294E2/#454545/gI' {} +
+
+# #2679db (Azul Escuro) -> #363636 (Preto Suave)
+find "$THEME_DIR" -type f -exec sed -i 's/#2679db/#363636/gI' {} +
+
+# #a9caf1 (Azul Claro) -> #cccccc (Cinza Claro)
+find "$THEME_DIR" -type f -exec sed -i 's/#a9caf1/#cccccc/gI' {} +
+
+# 2. Substituir RGBA (Comum no Gnome Shell/Cinnamon)
+# rgb(82, 148, 226) -> rgb(69, 69, 69)
+find "$THEME_DIR" -type f -exec sed -i 's/82, 148, 226/69, 69, 69/g' {} +
+find "$THEME_DIR" -type f -exec sed -i 's/82,148,226/69,69,69/g' {} +
+
+# 3. Forçar recompilação dos schemas do GLib (Garante que configs apliquem)
+glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+echo "--- CORES CORRIGIDAS COM SUCESSO ---"

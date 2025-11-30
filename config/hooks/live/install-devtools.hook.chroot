@@ -1,0 +1,46 @@
+#!/bin/sh
+
+echo "--- INICIANDO INSTALAÇÃO DE FERRAMENTAS DEV/SEC ---"
+
+# 1. Garantir dependências básicas para baixar coisas
+apt-get update
+apt-get install -y wget gpg apt-transport-https ca-certificates
+
+# ---------------------------------------------------------
+# INSTALAÇÃO DO VSCODIUM (Versão Open Source do VS Code)
+# ---------------------------------------------------------
+echo "Configurando VSCodium..."
+
+# Adiciona a chave de assinatura (GPG)
+wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
+    | gpg --dearmor \
+    | dd of=/usr/share/keyrings/vscodium-archive-keyring.gpg
+
+# Adiciona o repositório oficial
+echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
+    | tee /etc/apt/sources.list.d/vscodium.list
+
+# Atualiza e instala
+apt-get update
+apt-get install -y codium
+
+# ---------------------------------------------------------
+# INSTALAÇÃO DO BURP SUITE COMMUNITY
+# ---------------------------------------------------------
+echo "Baixando Burp Suite Community..."
+
+# Link direto oficial para a última versão Linux
+BURP_URL="https://portswigger.net/burp/releases/download?product=community&type=Linux"
+wget -q --show-progress -O /tmp/burpsuite_installer.sh "$BURP_URL"
+
+echo "Instalando Burp Suite..."
+chmod +x /tmp/burpsuite_installer.sh
+
+# Executa o instalador em modo silencioso (-q)
+# Ele vai instalar normalmente em /opt/BurpSuiteCommunity
+/tmp/burpsuite_installer.sh -q
+
+# Limpeza
+rm /tmp/burpsuite_installer.sh
+
+echo "--- INSTALAÇÃO CONCLUÍDA ---"

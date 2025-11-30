@@ -1,18 +1,28 @@
 #!/bin/sh
 
+# 1. Define ZSH como padrão
 chsh -s /usr/bin/zsh root
 sed -i 's|SHELL=/bin/bash|SHELL=/usr/bin/zsh|' /etc/default/useradd
 
-git clone https://github.com/spaceship-prompt/spaceship-prompt.git /usr/share/zsh/themes/spaceship-prompt --depth=1
-ln -s /usr/share/zsh/themes/spaceship-prompt/spaceship.zsh-theme /usr/share/zsh/themes/spaceship.zsh-theme
+# 2. Remove qualquer instalação quebrada antiga
+rm -rf /usr/share/spaceship-prompt
 
+# 3. Baixa o Spaceship novamente (no local correto)
+git clone https://github.com/spaceship-prompt/spaceship-prompt.git /usr/share/spaceship-prompt --depth=1
+
+# 4. Cria o .zshrc usando "source" direto (MUITO MAIS SEGURO que promptinit)
 cat <<EOF > /etc/skel/.zshrc
+# --- Configurações do ZSH ---
+
+# Carrega Plugins do Debian
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-autoload -U promptinit; promptinit
-prompt spaceship
+# --- CARREGAMENTO DO TEMA (Correção) ---
+# Em vez de usar promptinit, carregamos o arquivo direto.
+source "/usr/share/spaceship-prompt/spaceship.zsh"
 
+# --- Personalização do Spaceship ---
 SPACESHIP_PROMPT_ORDER=(
   user
   dir
@@ -27,10 +37,11 @@ SPACESHIP_USER_SHOW=always
 SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_CHAR_SYMBOL="❯"
 SPACESHIP_CHAR_SUFFIX=" "
-SPACESHIP_DIR_TRUNC=0
 
+# Aliases
 alias ll='ls -lha'
 alias grep='grep --color=auto'
 EOF
 
+# 5. Aplica a mesma config para o usuário root
 cp /etc/skel/.zshrc /root/.zshrc

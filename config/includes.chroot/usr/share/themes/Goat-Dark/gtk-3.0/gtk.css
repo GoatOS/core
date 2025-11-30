@@ -1,1 +1,56 @@
 @import url("resource:///org/gnome/arc-theme/gtk-main.css");
+
+/* REMOVENDO O AZUL - Sobrescrevendo com tons de cinza */
+@define-color theme_selected_bg_color #454545;
+@define-color theme_selected_fg_color #ffffff;
+
+@define-color theme_fg_color #eeeeee;
+@define-color theme_text_color #eeeeee;
+@define-color theme_bg_color #141414;
+@define-color theme_base_color #0a0a0a;
+
+@define-color fg_color #eeeeee;
+@define-color bg_color #141414;
+@define-color base_color #0a0a0a;
+
+/* Forçando a cor de seleção em tudo */
+*:selected,
+.view:selected,
+.entry:selected,
+entry:selected,
+dnd {
+    background-color: #454545;
+    color: #ffffff;
+}
+
+/* Resto do estilo Dark */
+window, 
+.background {
+    background-color: #141414;
+    color: #eeeeee;
+}
+
+.sidebar, 
+.sidebar .view, 
+stack.sidebar {
+    background-color: #050505;
+    color: #eeeeee;
+}
+
+entry, 
+textview, 
+view {
+    background-color: #0a0a0a;
+    color: #eeeeee;
+}
+
+menu, 
+.menu {
+    background-color: #141414;
+    border-color: #2b2b2b;
+}
+
+/* Remove bordas azuis de foco se existirem */
+entry:focus, button:focus {
+    border-color: #666666;
+}

@@ -1,0 +1,7 @@
+Package: xterm
+Pin: release *
+Pin-Priority: -1
+
+Package: uxterm
+Pin: release *
+Pin-Priority: -1

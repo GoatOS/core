@@ -1,19 +1,25 @@
-gtk-color-scheme = "base_color: #262626"
+# Esquema de cores "All Black/Graphite" (Sem Azul)
+gtk-color-scheme = "base_color: #0a0a0a"
 gtk-color-scheme = "text_color: #eeeeee"
-gtk-color-scheme = "bg_color: #1f1f1f"
+gtk-color-scheme = "bg_color: #141414"
 gtk-color-scheme = "fg_color: #eeeeee"
-gtk-color-scheme = "tooltip_bg_color: #121212"
+gtk-color-scheme = "tooltip_bg_color: #050505"
 gtk-color-scheme = "tooltip_fg_color: #ffffff"
-gtk-color-scheme = "selected_bg_color: #5294e2"
-gtk-color-scheme = "selected_fg_color: #ffffff"
-gtk-color-scheme = "insensitive_bg_color: #2b2b2b"
-gtk-color-scheme = "insensitive_fg_color: #707070"
-gtk-color-scheme = "notebook_bg: #262626"
-gtk-color-scheme = "dark_sidebar_bg: #181818"
-gtk-color-scheme = "link_color: #5294e2"
-gtk-color-scheme = "menu_bg: #1f1f1f"
 
-gtk-icon-sizes = "gtk-button=16,16" # This makes button icons smaller.
+# AQUI ESTAVA O AZUL: Mudado para Cinza Grafite
+gtk-color-scheme = "selected_bg_color: #454545"
+gtk-color-scheme = "selected_fg_color: #ffffff"
+
+gtk-color-scheme = "insensitive_bg_color: #1a1a1a"
+gtk-color-scheme = "insensitive_fg_color: #555555"
+gtk-color-scheme = "notebook_bg: #0a0a0a"
+gtk-color-scheme = "dark_sidebar_bg: #050505"
+
+# Link também alterado para um cinza mais claro (para destaque sutil)
+gtk-color-scheme = "link_color: #808080"
+gtk-color-scheme = "menu_bg: #141414"
+
+gtk-icon-sizes = "gtk-button=16,16"
 gtk-auto-mnemonics = 1
 gtk-primary-button-warps-slider = 1
 
