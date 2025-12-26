@@ -4,7 +4,6 @@
 
 # --- Browser ---
 chromium
-firefox-esr
 
 # --- Essentials ---
 vim

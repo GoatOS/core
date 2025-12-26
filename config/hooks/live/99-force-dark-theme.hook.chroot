@@ -53,10 +53,45 @@ cat > /etc/dconf/db/local.d/01-goatos-extensions << 'EOF'
 # GoatOS Extensions Configuration
 
 [org/gnome/shell]
-enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dash-to-dock@micxgx.gmail.com']
 
 [org/gnome/shell/extensions/appindicator]
 tray-pos='right'
+
+[org/gnome/shell/extensions/dash-to-dock]
+dock-position='BOTTOM'
+dash-max-icon-size=48
+transparency-mode='FIXED'
+background-opacity=0.8
+extend-height=false
+running-indicator-style='DOTS'
+show-trash=false
+show-mounts=false
+custom-theme-shrink=true
+background-color='#0a0a0a'
+EOF
+
+cat > /etc/dconf/db/local.d/03-goatos-app-folders << 'EOF'
+# GoatOS App Folders - Organized Categories
+
+[org/gnome/desktop/app-folders]
+folder-children=['Security', 'Network', 'Development', 'System']
+
+[org/gnome/desktop/app-folders/folders/Security]
+name='Security'
+apps=['wireshark.desktop', 'org.nmap.Zenmap.desktop', 'sqlmap.desktop', 'nikto.desktop', 'hydra.desktop', 'mitmproxy.desktop', 'burpsuite.desktop']
+
+[org/gnome/desktop/app-folders/folders/Network]
+name='Network'
+apps=['chromium.desktop', 'virt-manager.desktop', 'nm-connection-editor.desktop']
+
+[org/gnome/desktop/app-folders/folders/Development]
+name='Development'
+apps=['nvim.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.Terminal.desktop']
+
+[org/gnome/desktop/app-folders/folders/System]
+name='System'
+apps=['org.gnome.Nautilus.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.Settings.desktop', 'org.gnome.tweaks.desktop', 'org.gnome.DiskUtility.desktop', 'gparted.desktop', 'calamares.desktop']
 EOF
 
 cat > /etc/dconf/db/local.d/02-goatos-terminal << 'EOF'
@@ -84,54 +119,99 @@ EOF
 # 3. Criar GTK CSS override para apps
 mkdir -p /etc/skel/.config/gtk-3.0
 cat > /etc/skel/.config/gtk-3.0/gtk.css << 'EOF'
-/* GoatSecurity GTK Override */
+/* GoatSecurity GTK Override - Pure B&W */
 
-@define-color theme_bg_color #000000;
+@define-color theme_bg_color #0a0a0a;
 @define-color theme_fg_color #ffffff;
 @define-color theme_base_color #0a0a0a;
 @define-color theme_text_color #ffffff;
-@define-color theme_selected_bg_color #1a1a1a;
-@define-color theme_selected_fg_color #ffffff;
+@define-color theme_selected_bg_color #ffffff;
+@define-color theme_selected_fg_color #0a0a0a;
 @define-color insensitive_bg_color #0d0d0d;
-@define-color insensitive_fg_color #888888;
+@define-color insensitive_fg_color #666666;
 @define-color borders #1a1a1a;
 
 /* Headerbar */
 headerbar {
-    background: #000000;
+    background: #0a0a0a;
     border-bottom: 1px solid #1a1a1a;
 }
 
-/* Buttons */
+/* Buttons - NO BORDERS */
 button {
-    background: #0d0d0d;
-    border: 1px solid #1a1a1a;
+    background: #1a1a1a;
+    border: none;
+    border-radius: 4px;
     color: #ffffff;
 }
 
 button:hover {
-    background: #1a1a1a;
-    border-color: #2a2a2a;
+    background: #2a2a2a;
+}
+
+button:active {
+    background: #ffffff;
+    color: #0a0a0a;
 }
 
 /* Entry */
 entry {
     background: #0a0a0a;
     border: 1px solid #1a1a1a;
+    border-radius: 4px;
     color: #ffffff;
+}
+
+entry:focus {
+    border-color: #ffffff;
 }
 
 /* Sidebar */
 .sidebar {
-    background: #000000;
+    background: #0a0a0a;
     border-right: 1px solid #1a1a1a;
+}
+
+/* Selection */
+*:selected {
+    background-color: #ffffff;
+    color: #0a0a0a;
 }
 EOF
 
 mkdir -p /etc/skel/.config/gtk-4.0
 cp /etc/skel/.config/gtk-3.0/gtk.css /etc/skel/.config/gtk-4.0/gtk.css
 
-# 4. Atualizar banco dconf
+# 5. Fix GNOME Shell CSS - Replace blue-tinted colors with pure B&W
+GNOME_SHELL_CSS="/usr/share/themes/Goat-Dark/gnome-shell/gnome-shell.css"
+if [ -f "$GNOME_SHELL_CSS" ]; then
+    echo "Fixing GNOME Shell CSS colors (removing blue tints)..."
+    # Replace Arc-dark blue backgrounds with pure dark grays
+    sed -i 's/#383C4A/#0a0a0a/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#404552/#121212/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#444a58/#1a1a1a/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#505666/#2a2a2a/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#323644/#0d0d0d/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#353945/#141414/gi' "$GNOME_SHELL_CSS"
+    # Replace blue-tinted borders with pure gray
+    sed -i 's/#2b2e39/#1a1a1a/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#313440/#1a1a1a/gi' "$GNOME_SHELL_CSS"
+    # Replace bluish text with pure white
+    sed -i 's/#D3DAE3/#ffffff/gi' "$GNOME_SHELL_CSS"
+    sed -i 's/#BAC3CF/#cccccc/gi' "$GNOME_SHELL_CSS"
+    # Replace arc accent with white
+    sed -i 's/#5294e2/#ffffff/gi' "$GNOME_SHELL_CSS"
+    # Remove button borders
+    sed -i 's/border: 1px solid #1a1a1a;/border: none;/gi' "$GNOME_SHELL_CSS"
+fi
+
+# 6. Setup user avatar (goat icon)
+mkdir -p /etc/skel
+if [ -f /usr/share/pixmaps/goatos-logo.png ]; then
+    cp /usr/share/pixmaps/goatos-logo.png /etc/skel/.face
+fi
+
+# 7. Atualizar banco dconf
 echo "Atualizando dconf database..."
 dconf update
 

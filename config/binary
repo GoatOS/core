@@ -10,7 +10,7 @@ LB_BINARY_FILESYSTEM="fat16"
 LB_APT_INDICES="true"
 
 # Set boot parameters
-LB_BOOTAPPEND_LIVE="boot=live components locales=pt_BR.UTF-8 keyboard-layouts=br timezone=America/Sao_Paulo"
+LB_BOOTAPPEND_LIVE="boot=live components username=goat locales=en_US.UTF-8 keyboard-layouts=br timezone=America/Sao_Paulo"
 
 # Set boot parameters
 LB_BOOTAPPEND_INSTALL=""

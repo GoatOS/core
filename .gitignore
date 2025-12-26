@@ -45,3 +45,6 @@ desktop.ini
 *.bak
 *.backup
 *.orig
+
+GOAT_*
+GOAT_COMMUNITY_README.md

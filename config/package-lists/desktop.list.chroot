@@ -11,6 +11,7 @@ gnome-text-editor
 gnome-calculator
 gnome-screenshot
 gnome-shell-extension-appindicator
+gnome-shell-extension-dashtodock
 gnome-font-viewer
 dconf-cli
 
