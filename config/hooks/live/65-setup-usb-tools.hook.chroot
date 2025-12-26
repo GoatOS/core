@@ -1,0 +1,112 @@
+#!/bin/bash
+# GoatOS - Ferramentas para USB/ISO
+
+set -e
+
+echo "=== GOATOS: Configurando ferramentas USB ==="
+
+# Criar script para gravar ISO em pendrive
+cat > /usr/local/bin/goat-usb << 'EOF'
+#!/bin/bash
+# GoatOS USB Writer - Grava ISO em pendrive
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+echo -e "${GREEN}"
+echo "   ____             _   _   _ ____  ____  "
+echo "  / ___| ___   __ _| |_| | | / ___|| __ ) "
+echo " | |  _ / _ \ / _\` | __| | | \___ \|  _ \ "
+echo " | |_| | (_) | (_| | |_| |_| |___) | |_) |"
+echo "  \____|\___/ \__,_|\__|\___/|____/|____/ "
+echo -e "${NC}"
+echo "GoatOS USB Writer"
+echo ""
+
+if [ "$EUID" -ne 0 ]; then
+    echo -e "${RED}[!] Execute como root: sudo goat-usb${NC}"
+    exit 1
+fi
+
+ISO_FILE="$1"
+
+if [ -z "$ISO_FILE" ]; then
+    echo "Uso: sudo goat-usb <arquivo.iso>"
+    echo ""
+    echo "ISOs disponíveis no diretório atual:"
+    ls -la *.iso 2>/dev/null || echo "  Nenhuma ISO encontrada"
+    exit 1
+fi
+
+if [ ! -f "$ISO_FILE" ]; then
+    echo -e "${RED}[!] Arquivo não encontrado: $ISO_FILE${NC}"
+    exit 1
+fi
+
+echo -e "${YELLOW}[*] Dispositivos USB disponíveis:${NC}"
+echo ""
+lsblk -d -o NAME,SIZE,MODEL | grep -E "^sd|^nvme" | grep -v "$(df / | tail -1 | cut -d' ' -f1 | sed 's/[0-9]*$//')"
+echo ""
+
+read -p "Digite o dispositivo (ex: sdb): " DEVICE
+
+if [ -z "$DEVICE" ]; then
+    echo -e "${RED}[!] Dispositivo não especificado${NC}"
+    exit 1
+fi
+
+DEVICE_PATH="/dev/$DEVICE"
+
+if [ ! -b "$DEVICE_PATH" ]; then
+    echo -e "${RED}[!] Dispositivo inválido: $DEVICE_PATH${NC}"
+    exit 1
+fi
+
+echo ""
+echo -e "${RED}[!] ATENÇÃO: Todos os dados em $DEVICE_PATH serão APAGADOS!${NC}"
+read -p "Tem certeza? (digite 'sim' para confirmar): " CONFIRM
+
+if [ "$CONFIRM" != "sim" ]; then
+    echo "Operação cancelada."
+    exit 0
+fi
+
+echo ""
+echo -e "${YELLOW}[*] Desmontando partições...${NC}"
+umount ${DEVICE_PATH}* 2>/dev/null || true
+
+echo -e "${YELLOW}[*] Gravando ISO...${NC}"
+dd if="$ISO_FILE" of="$DEVICE_PATH" bs=4M status=progress oflag=sync
+
+echo ""
+echo -e "${GREEN}[✓] ISO gravada com sucesso em $DEVICE_PATH${NC}"
+echo -e "${GREEN}[✓] Você pode remover o pendrive com segurança${NC}"
+EOF
+chmod +x /usr/local/bin/goat-usb
+
+# Criar script para baixar e instalar Ventoy
+cat > /usr/local/bin/install-ventoy << 'EOF'
+#!/bin/bash
+# Instalar Ventoy - Ferramenta multi-boot USB
+
+echo "[*] Baixando Ventoy..."
+VENTOY_VERSION="1.0.99"
+wget -q --show-progress -O /tmp/ventoy.tar.gz \
+    "https://github.com/ventoy/Ventoy/releases/download/v${VENTOY_VERSION}/ventoy-${VENTOY_VERSION}-linux.tar.gz"
+
+echo "[*] Extraindo..."
+tar -xzf /tmp/ventoy.tar.gz -C /opt/
+mv /opt/ventoy-* /opt/ventoy
+
+echo "[*] Criando link..."
+ln -sf /opt/ventoy/Ventoy2Disk.sh /usr/local/bin/ventoy
+
+echo "[✓] Ventoy instalado!"
+echo "    Use: sudo ventoy -i /dev/sdX"
+rm /tmp/ventoy.tar.gz
+EOF
+chmod +x /usr/local/bin/install-ventoy
+
+echo "=== GOATOS: Ferramentas USB configuradas ==="

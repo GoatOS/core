@@ -1,0 +1,75 @@
+#!/bin/bash
+# GoatOS - Melhorias adicionais do sistema
+
+set -e
+
+echo "=== GOATOS: Aplicando melhorias finais ==="
+
+# --- Aliases para CTF/Decode ---
+cat >> /etc/bash.bashrc << 'CTFALIASES'
+
+# CTF/Decode aliases
+alias b64d='base64 -d'
+alias b64e='base64'
+alias hexd='xxd -r -p'
+alias hexe='xxd -p'
+alias urld='python3 -c "import sys,urllib.parse;print(urllib.parse.unquote(sys.argv[1]))"'
+alias urle='python3 -c "import sys,urllib.parse;print(urllib.parse.quote(sys.argv[1]))"'
+alias rot13='tr "A-Za-z" "N-ZA-Mn-za-m"'
+alias md5sum='md5sum'
+alias sha256='sha256sum'
+
+# Network shortcuts
+alias myip='curl -s ifconfig.me'
+alias ports='ss -tuln'
+alias listen='nc -lvnp'
+
+# Python servers
+alias pyserver='python3 -m http.server 8000'
+alias phpserver='php -S 0.0.0.0:8000'
+
+CTFALIASES
+
+# --- Arquivo .hushlogin para evitar MOTD duplicado ---
+touch /etc/skel/.hushlogin
+
+# --- Configurar sudo sem senha para user (opcional) ---
+echo "user ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/goatos-nopasswd
+chmod 440 /etc/sudoers.d/goatos-nopasswd
+
+# --- Criar diretórios úteis ---
+mkdir -p /etc/skel/Projects
+mkdir -p /etc/skel/Tools
+mkdir -p /etc/skel/Reports
+
+# --- Script de primeiro boot ---
+cat > /etc/skel/.first-boot.sh << 'EOF'
+#!/bin/bash
+# GoatOS First Boot Setup
+
+if [ ! -f ~/.goatos-configured ]; then
+    echo "🐐 Bem-vindo ao GoatOS!"
+    echo ""
+    echo "Configuração inicial:"
+    echo "  1. Atualize as ferramentas: goat-update"
+    echo "  2. Configure sua VPN: htb-vpn ou thm-vpn"
+    echo "  3. Explore os cheatsheets: /opt/cheatsheets/"
+    echo ""
+    touch ~/.goatos-configured
+fi
+EOF
+chmod +x /etc/skel/.first-boot.sh
+
+# Adicionar ao bashrc
+echo '~/.first-boot.sh 2>/dev/null || true' >> /etc/skel/.bashrc
+
+# --- Instalar ferramentas Python via pip ---
+pip3 install --break-system-packages \
+    pwntools \
+    requests \
+    beautifulsoup4 \
+    lxml \
+    pycryptodome \
+    2>/dev/null || true
+
+echo "=== GOATOS: Melhorias aplicadas ==="

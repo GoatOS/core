@@ -21,6 +21,14 @@ fonts-jetbrains-mono
 papirus-icon-theme
 dmz-cursor-theme
 
+# USB/ISO Tools
+gparted
+gnome-multi-writer
+usb-creator-gtk
+dosfstools
+ntfs-3g
+exfatprogs
+
 calamares
 calamares-settings-debian
 network-manager-gnome
