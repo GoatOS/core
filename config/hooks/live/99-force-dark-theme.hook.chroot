@@ -1,33 +1,138 @@
-#!/bin/sh
+#!/bin/bash
+# GoatOS GNOME Theme Configuration
+# GoatSecurity aesthetic - Pure Black & White
 
-# Define o diretório do tema
-THEME_DIR="/usr/share/themes/Goat-Dark"
+set -e
 
-echo "--- EXTERMINANDO AZUL DO TEMA GOAT-DARK ---"
+echo "=== GOATOS: Configurando tema GNOME ==="
 
-# Se o diretório não existir (ex: erro no copy), cria para evitar falha
-if [ ! -d "$THEME_DIR" ]; then
-    echo "AVISO: Pasta do tema não encontrada em $THEME_DIR"
-    exit 0
-fi
+# 1. Criar perfil dconf
+mkdir -p /etc/dconf/profile
+cat > /etc/dconf/profile/user << 'EOF'
+user-db:user
+system-db:local
+EOF
 
-# 1. Substituir Hexadecimais (Maiúsculo e Minúsculo)
-# #5294e2 (Azul Padrão) -> #454545 (Cinza Grafite)
-find "$THEME_DIR" -type f -exec sed -i 's/#5294e2/#454545/gI' {} +
-find "$THEME_DIR" -type f -exec sed -i 's/#5294E2/#454545/gI' {} +
+# 2. Criar configurações do tema
+mkdir -p /etc/dconf/db/local.d
 
-# #2679db (Azul Escuro) -> #363636 (Preto Suave)
-find "$THEME_DIR" -type f -exec sed -i 's/#2679db/#363636/gI' {} +
+cat > /etc/dconf/db/local.d/00-goatos-appearance << 'EOF'
+# GoatOS Appearance - GoatSecurity Palette
 
-# #a9caf1 (Azul Claro) -> #cccccc (Cinza Claro)
-find "$THEME_DIR" -type f -exec sed -i 's/#a9caf1/#cccccc/gI' {} +
+[org/gnome/desktop/interface]
+gtk-theme='Adwaita-dark'
+icon-theme='Papirus-Dark'
+cursor-theme='DMZ-Black'
+color-scheme='prefer-dark'
+font-name='Inter 11'
+document-font-name='Inter 11'
+monospace-font-name='JetBrains Mono 11'
+enable-animations=true
 
-# 2. Substituir RGBA (Comum no Gnome Shell/Cinnamon)
-# rgb(82, 148, 226) -> rgb(69, 69, 69)
-find "$THEME_DIR" -type f -exec sed -i 's/82, 148, 226/69, 69, 69/g' {} +
-find "$THEME_DIR" -type f -exec sed -i 's/82,148,226/69,69,69/g' {} +
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/goatos-wallpaper.jpg'
+picture-uri-dark='file:///usr/share/backgrounds/goatos-wallpaper.jpg'
+picture-options='zoom'
+primary-color='#000000'
+secondary-color='#000000'
 
-# 3. Forçar recompilação dos schemas do GLib (Garante que configs apliquem)
-glib-compile-schemas /usr/share/glib-2.0/schemas/
+[org/gnome/desktop/screensaver]
+picture-uri='file:///usr/share/backgrounds/goatos-wallpaper.jpg'
+primary-color='#000000'
+secondary-color='#000000'
 
-echo "--- CORES CORRIGIDAS COM SUCESSO ---"
+[org/gnome/desktop/wm/preferences]
+theme='Adwaita-dark'
+button-layout='appmenu:minimize,maximize,close'
+
+[org/gnome/shell]
+favorite-apps=['chromium.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'wireshark.desktop', 'org.gnome.TextEditor.desktop', 'postman.desktop']
+EOF
+
+cat > /etc/dconf/db/local.d/01-goatos-extensions << 'EOF'
+# GoatOS Extensions Configuration
+
+[org/gnome/shell]
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com']
+
+[org/gnome/shell/extensions/appindicator]
+tray-pos='right'
+EOF
+
+cat > /etc/dconf/db/local.d/02-goatos-terminal << 'EOF'
+# GoatOS Terminal - GoatSecurity Palette
+
+[org/gnome/terminal/legacy]
+theme-variant='dark'
+default-show-menubar=false
+
+[org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+visible-name='GoatOS'
+use-theme-colors=false
+foreground-color='#ffffff'
+background-color='#000000'
+use-transparent-background=true
+background-transparency-percent=5
+palette=['#000000', '#ff5555', '#50fa7b', '#f1fa8c', '#bd93f9', '#ff79c6', '#8be9fd', '#888888', '#555555', '#ff6e6e', '#69ff94', '#ffffa5', '#d6acff', '#ff92df', '#a4ffff', '#ffffff']
+font='JetBrains Mono 12'
+use-system-font=false
+audible-bell=false
+scrollback-unlimited=true
+cursor-blink-mode='off'
+EOF
+
+# 3. Criar GTK CSS override para apps
+mkdir -p /etc/skel/.config/gtk-3.0
+cat > /etc/skel/.config/gtk-3.0/gtk.css << 'EOF'
+/* GoatSecurity GTK Override */
+
+@define-color theme_bg_color #000000;
+@define-color theme_fg_color #ffffff;
+@define-color theme_base_color #0a0a0a;
+@define-color theme_text_color #ffffff;
+@define-color theme_selected_bg_color #1a1a1a;
+@define-color theme_selected_fg_color #ffffff;
+@define-color insensitive_bg_color #0d0d0d;
+@define-color insensitive_fg_color #888888;
+@define-color borders #1a1a1a;
+
+/* Headerbar */
+headerbar {
+    background: #000000;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+/* Buttons */
+button {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    color: #ffffff;
+}
+
+button:hover {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+/* Entry */
+entry {
+    background: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    color: #ffffff;
+}
+
+/* Sidebar */
+.sidebar {
+    background: #000000;
+    border-right: 1px solid #1a1a1a;
+}
+EOF
+
+mkdir -p /etc/skel/.config/gtk-4.0
+cp /etc/skel/.config/gtk-3.0/gtk.css /etc/skel/.config/gtk-4.0/gtk.css
+
+# 4. Atualizar banco dconf
+echo "Atualizando dconf database..."
+dconf update
+
+echo "=== GOATOS: Tema configurado com sucesso ==="

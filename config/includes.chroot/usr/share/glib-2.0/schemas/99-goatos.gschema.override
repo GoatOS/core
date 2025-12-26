@@ -1,0 +1,24 @@
+[org.gnome.desktop.interface]
+gtk-theme='Goat-Dark'
+icon-theme='Papirus-Dark'
+cursor-theme='DMZ-Black'
+color-scheme='prefer-dark'
+font-name='Inter 11'
+monospace-font-name='JetBrains Mono 11'
+
+[org.gnome.desktop.background]
+picture-uri='file:///usr/share/backgrounds/goatos-wallpaper.jpg'
+picture-uri-dark='file:///usr/share/backgrounds/goatos-wallpaper.jpg'
+primary-color='#000000'
+secondary-color='#000000'
+
+[org.gnome.desktop.wm.preferences]
+theme='Goat-Dark'
+button-layout='appmenu:minimize,maximize,close'
+
+[org.gnome.desktop.peripherals.touchpad]
+tap-to-click=true
+natural-scroll=true
+
+[org.gnome.mutter]
+center-new-windows=true

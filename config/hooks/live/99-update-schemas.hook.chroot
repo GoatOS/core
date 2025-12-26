@@ -1,3 +1,13 @@
-#!/bin/sh
-# Compila os schemas para aplicar o wallpaper e tema definidos
-glib-compile-schemas /usr/share/glib-2.0/schemas
+#!/bin/bash
+# GoatOS GSettings Schema Compiler
+
+set -e
+
+echo "=== GOATOS: Compilando GSettings Schemas ==="
+
+if [ -d "/usr/share/glib-2.0/schemas" ]; then
+    glib-compile-schemas /usr/share/glib-2.0/schemas/
+    echo "Schemas compilados com sucesso!"
+else
+    echo "Pasta de schemas não encontrada"
+fi

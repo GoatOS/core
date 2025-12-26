@@ -1,0 +1,29 @@
+#!/bin/bash
+# GoatOS GDM Theme Configuration
+
+set -e
+
+echo "=== GOATOS: Configurando GDM ==="
+
+# Criar configurações do GDM
+mkdir -p /etc/dconf/db/gdm.d
+
+cat > /etc/dconf/db/gdm.d/00-goatos-gdm << 'EOF'
+[org/gnome/desktop/interface]
+gtk-theme='Goat-Dark'
+icon-theme='Papirus-Dark'
+cursor-theme='DMZ-Black'
+
+[org/gnome/login-screen]
+logo='/usr/share/icons/goatos/goatos-logo.svg'
+disable-user-list=false
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/goatos-wallpaper.jpg'
+primary-color='#000000'
+EOF
+
+# Atualizar banco dconf
+dconf update
+
+echo "=== GOATOS: GDM configurado ==="

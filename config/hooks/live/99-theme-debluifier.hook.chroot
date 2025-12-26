@@ -1,21 +1,131 @@
-#!/bin/sh
+#!/bin/bash
+# GoatOS Theme Color Corrector
+# Applies GoatSecurity Palette - Pure Black & White
 
-echo "--- APLICANDO PALETA DARK MODERN (REMOVENDO AZUL) ---"
+set -e
+
+echo "=== GOATOS: Aplicando paleta GoatSecurity ==="
+
+# GoatSecurity Palette:
+# --color-bg: #000000
+# --color-bg-secondary: #0a0a0a
+# --color-bg-tertiary: #111111
+# --color-bg-card: #0d0d0d
+# --color-text-primary: #ffffff
+# --color-text-secondary: #888888
+# --color-border: #1a1a1a
+# --color-border-hover: #2a2a2a
 
 THEME_DIR="/usr/share/themes/Goat-Dark"
 
-# Cores para substituir:
-# #5294e2 (Azul Principal) -> #454545 (Cinza Grafite)
-# #2679db (Azul Escuro/Ativo) -> #363636 (Preto Suave)
-# #a9caf1 (Links/Azul Claro) -> #cccccc (Cinza Claro)
-# 82, 148, 226 (Azul em RGBA) -> 69, 69, 69 (Cinza em RGBA)
+if [ ! -d "$THEME_DIR" ]; then
+    echo "Criando tema Goat-Dark baseado em Adwaita-dark..."
+    
+    # Copiar Adwaita-dark como base se existir
+    if [ -d "/usr/share/themes/Adwaita-dark" ]; then
+        cp -r /usr/share/themes/Adwaita-dark "$THEME_DIR"
+    elif [ -d "/usr/share/themes/Arc-Dark" ]; then
+        cp -r /usr/share/themes/Arc-Dark "$THEME_DIR"
+    else
+        echo "AVISO: Nenhum tema base encontrado"
+        exit 0
+    fi
+fi
 
-# Executa a substituição em todos os arquivos CSS, XML, RC e SVG do tema
-find "$THEME_DIR" -type f \( -name "*.css" -o -name "*.xml" -o -name "*.rc" -o -name "*.svg" \) -exec sed -i \
-    -e 's/#5294e2/#454545/g' \
-    -e 's/#2679db/#363636/g' \
-    -e 's/#a9caf1/#cccccc/g' \
-    -e 's/82, 148, 226/69, 69, 69/g' \
-    {} +
+echo "[*] Aplicando cores GoatSecurity..."
 
-echo "--- TEMA CORRIGIDO COM SUCESSO ---"
+# Substituir cores em todos os arquivos de tema
+find "$THEME_DIR" -type f \( -name "*.css" -o -name "*.xml" -o -name "*.rc" -o -name "*.svg" \) 2>/dev/null | while read file; do
+    # Backgrounds -> Pure black
+    sed -i \
+        -e 's/#2d2d2d/#000000/gI' \
+        -e 's/#242424/#000000/gI' \
+        -e 's/#1e1e1e/#000000/gI' \
+        -e 's/#303030/#0a0a0a/gI' \
+        -e 's/#353535/#0d0d0d/gI' \
+        -e 's/#383838/#0d0d0d/gI' \
+        -e 's/#3d3d3d/#111111/gI' \
+        -e 's/#404040/#111111/gI' \
+        -e 's/#4a4a4a/#1a1a1a/gI' \
+        -e 's/#505050/#1a1a1a/gI' \
+        "$file" 2>/dev/null || true
+    
+    # Blue accents -> Neutral gray
+    sed -i \
+        -e 's/#3584e4/#2a2a2a/gI' \
+        -e 's/#5294e2/#1a1a1a/gI' \
+        -e 's/#2679db/#0d0d0d/gI' \
+        -e 's/#1c71d8/#1a1a1a/gI' \
+        -e 's/#62a0ea/#888888/gI' \
+        -e 's/#99c1f1/#888888/gI' \
+        "$file" 2>/dev/null || true
+    
+    # Text colors -> Pure white
+    sed -i \
+        -e 's/#eeeeec/#ffffff/gI' \
+        -e 's/#d3d7cf/#ffffff/gI' \
+        -e 's/#e0e0e0/#ffffff/gI' \
+        -e 's/#cccccc/#888888/gI' \
+        -e 's/#aaaaaa/#888888/gI' \
+        "$file" 2>/dev/null || true
+done
+
+# Criar override CSS para GNOME Shell
+mkdir -p /usr/share/gnome-shell/theme
+cat > /usr/share/gnome-shell/theme/goatos.css << 'EOF'
+/* GoatSecurity Theme Override */
+
+stage {
+    color: #ffffff;
+    background-color: #000000;
+}
+
+.panel {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.panel-button {
+    color: #888888;
+}
+
+.panel-button:hover {
+    color: #ffffff;
+    background-color: #1a1a1a;
+}
+
+.overview-background {
+    background-color: #000000;
+}
+
+.search-entry {
+    background-color: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    color: #ffffff;
+}
+
+.popup-menu {
+    background-color: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    color: #ffffff;
+}
+
+.popup-menu-item:hover {
+    background-color: #1a1a1a;
+}
+
+.modal-dialog {
+    background-color: #0d0d0d;
+    border: 1px solid #1a1a1a;
+}
+
+.window-caption {
+    color: #ffffff;
+}
+
+.workspace-thumbnail-indicator {
+    border: 2px solid #ffffff;
+}
+EOF
+
+echo "=== GOATOS: Paleta GoatSecurity aplicada ==="
