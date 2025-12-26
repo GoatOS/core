@@ -18,6 +18,7 @@ source/
 # Live-build state files
 .build
 .stage
+chroot.* 
 
 # Logs
 *.log
